@@ -1,134 +1,86 @@
-# Express.js MySQL REST API Starter Pack
+﻿# API Presensi Online Mahasiswa Jayanusa Padang
 
-Starter pack microframework **Express.js** dengan konfigurasi database **mysql**. Cocok digunakan untuk projek REST API.
+Aplikasi ini adalah backend API untuk presensi online mahasiswa Jayanusa Padang.
+API dibuat dengan **Express.js** dan **MySQL**, dan dilengkapi dengan dokumentasi API melalui **Swagger UI**.
+Aplikasi ini didesain untuk mendukung frontend **React** dan sudah disiapkan agar mendukung upload multipart menggunakan `multer`.
 
-**Express.js** microframework starter package with database **mysql** configuration. Suitable for use REST API projects.
+## Descriptions
 
-## Features
+- Bahasa:
+  - Backend API untuk sistem presensi online mahasiswa Jayanusa Padang.
+  - Dilengkapi dengan dokumentasi Swagger UI.
+  - Siap digunakan bersama frontend React.
 
-- Express.js REST API
-- MySQL Database Integration
-- Environment Variables (.env)
-- Middleware Support
-- CORS Configuration
-- API Versioning Ready
-- Clean Folder Structure
+- English:
+  - Backend API for the online attendance system of Jayanusa Padang students.
+  - Includes Swagger UI documentation.
+  - Ready to be used with a React frontend.
 
----
+## Feature
 
-## Tech Stack
-
-| Technology      | Description                     |
-| --------------- | ------------------------------- |
-| Node.js         | JavaScript Runtime              |
-| Express.js      | Backend Framework               |
-| MySQL           | Relational Database             |
-| mysql2          | MySQL Driver                    |
-| dotenv          | Environment Variable Management |
-| cors            | Cross-Origin Resource Sharing   |
-| nodemon         | Development Auto Reload         |
-| express-session | Session for application         |
-| cookie-parser   |
-
----
+- API presensi online untuk mahasiswa
+- Dokumentasi API dengan Swagger UI di `/api-docs`
+- Mendukung multipart upload dengan `multer`
+- Session dan cookie handling
+- Konfigurasi CORS
+- Koneksi MySQL dengan environment variable
 
 ## Project Structure
 
 ```bash
-project/
+api-presensi/
 │
 ├── src/
-│   ├── configs/
-│   ├── controllers/
-│   ├── middlewares/
-│   ├── routes/
-│   ├── utils/
+│   ├── configs/         # konfigurasi database
+│   ├── controllers/     # logika endpoint
+│   ├── middlewares/     # middleware autentikasi dan role
+│   ├── routes/          # definisi route
+│   ├── utils/           # utilitas helper
+│   └── docs/            # dokumentasi Swagger OpenAPI
 ├── .env
-├── .gitignore
 ├── main.js
 ├── package.json
 ├── package-lock.json
 └── README.md
 ```
 
----
+## Installations
 
-## Installation
-
-Clone repository:
+1. Clone repository:
 
 ```bash
-git clone https://github.com/alwannelson/starterpack-expressjs.git
+git clone <repository-url>
 ```
 
-Go to your project folder:
+2. Masuk ke folder project:
 
 ```bash
-cd starterpack-expressjs
+cd api-presensi
 ```
 
-Install dependencies:
+3. Install dependency:
 
 ```bash
 npm install
 ```
 
-Run your app:
+4. Jalankan aplikasi:
 
 ```bash
 npm run dev
 ```
 
----
+## Swagger UI
 
-## API Example
+Dokumentasi Swagger tersedia di:
 
-### Get All Users
-
-```http
-GET /api/hello
+```text
+http://localhost:6767/api-docs
 ```
 
-Response:
-
-```json
-{
-  "status": "success",
-  "message": "Hello Dev!"
-}
-```
-
----
-
-## Installed Packages
-
-```json
-{
-  "cookie-parser": "^1.4.7",
-  "cors": "^2.8.6",
-  "dotenv": "^17.4.2",
-  "express": "^5.2.1",
-  "express-session": "^1.19.0",
-  "mysql2": "^3.22.5",
-  "nodemon": "^3.1.14",
-  "path": "^0.12.7"
-}
-```
-
----
+OpenAPI definition tersedia di `src/docs/swagger.yaml`.
 
 ## Author
 
-**Alwan Aditia**
-
-- Web Developer
-- Information Systems Student
-- Backend & API Enthusiast
-
-GitHub:
-https://github.com/alwannelson
-
-Instagram:
-https://instagram.com/awannaditia
-
----
+- GitHub: https://github.com/alwannelson
+- Instagram: https://instagram.com/awannaditia
