@@ -1,0 +1,314 @@
+openapi: 3.0.0
+info:
+  title: API Presensi
+  version: 1.0.0
+  description: Dokumentasi Swagger untuk API Presensi.
+servers:
+  - url: http://localhost:6767
+    description: Local server
+components:
+  schemas:
+    BasicResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+    StudentsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+    CoursesResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        currentDateFormatted:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+    CourseDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+paths:
+  /s/login:
+    post:
+      tags:
+        - Student
+      summary: Login student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nim
+                - password
+              properties:
+                nim:
+                  type: string
+                  example: "12345678"
+                password:
+                  type: string
+                  example: "secret123"
+      responses:
+        '200':
+          description: Berhasil login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+  /s/today:
+    get:
+      tags:
+        - Student
+      summary: Ambil daftar jadwal hari ini untuk student yang login
+      responses:
+        '200':
+          description: Berhasil mengambil jadwal hari ini
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CoursesResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+  /s/courses:
+    get:
+      tags:
+        - Student
+      summary: Ambil daftar mata kuliah student berdasarkan jurusan
+      responses:
+        '200':
+          description: Berhasil mengambil daftar mata kuliah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+  /s/today/present/{slug}:
+    get:
+      tags:
+        - Student
+      summary: Ambil informasi mata kuliah hari ini berdasarkan slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Slug mata kuliah
+      responses:
+        '200':
+          description: Berhasil mengambil detail mata kuliah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseDetailResponse'
+        '404':
+          description: Tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+  /a/login:
+    post:
+      tags:
+        - Academic
+      summary: Login academic user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: "dosen01"
+                password:
+                  type: string
+                  example: "secret123"
+      responses:
+        '200':
+          description: Berhasil login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+  /a/students:
+    get:
+      tags:
+        - Academic
+      summary: Ambil data mahasiswa dengan filter opsional
+      parameters:
+        - name: nim
+          in: query
+          schema:
+            type: string
+          description: Filter berdasarkan NIM
+        - name: major
+          in: query
+          schema:
+            type: string
+          description: Filter berdasarkan kode jurusan
+        - name: fullname
+          in: query
+          schema:
+            type: string
+          description: Filter berdasarkan nama lengkap
+      responses:
+        '200':
+          description: Berhasil mengambil data mahasiswa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentsResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+  /a/students/new-student:
+    post:
+      tags:
+        - Academic
+      summary: Tambah mahasiswa baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nim
+                - fullname
+                - password
+                - major
+                - email
+              properties:
+                nim:
+                  type: string
+                  example: "12345678"
+                fullname:
+                  type: string
+                  example: "Budi Santoso"
+                password:
+                  type: string
+                  example: "secret123"
+                major:
+                  type: string
+                  example: "SI"
+                email:
+                  type: string
+                  format: email
+                  example: "budi@example.com"
+      responses:
+        '201':
+          description: Mahasiswa berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+  /logout:
+    post:
+      tags:
+        - Global
+      summary: Logout user
+      responses:
+        '200':
+          description: Berhasil logout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BasicResponse'
