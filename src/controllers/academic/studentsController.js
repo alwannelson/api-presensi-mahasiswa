@@ -44,8 +44,8 @@ exports.getStudents = async function (req, res) {
         return res.status(200).json({
             status: 'Success',
             message: 'Berikut data-data mahasiswa.',
-            data: {
-                result: rows,
+            result: {
+                rows,
                 length: rows.length
             }
         });
@@ -54,6 +54,45 @@ exports.getStudents = async function (req, res) {
         res.status(500).json({
             status: 'Internal Server Error',
             message: 'Maaf, terjadi kesalahan pada server.'
+        })
+    }
+}
+
+exports.getStudentCount = async function (req, res) {
+    try {
+        const [rows] = await db.query(
+            `SELECT 
+                COUNT(*) AS student_count,
+                COUNT(CASE WHEN is_active = 1 THEN 1 END) AS active,
+                COUNT(CASE WHEN is_active = 0 THEN 1 END) AS deactive
+            FROM students`
+        )
+        const studentCount = rows[0].student_count
+        const active = rows[0].active
+        const deactive = rows[0].deactive
+
+        const activePercentage = ((active / studentCount) * 100).toFixed(2)
+        const deactivePercentage = ((deactive / studentCount) * 100).toFixed(2)
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'Berikut jumlah dan persentase mahasiswa.',
+            result: {
+                count: studentCount,
+                active: {
+                    count: active,
+                    percentage: activePercentage
+                },
+                deactive: {
+                    count: deactive,
+                    percentage: deactivePercentage
+                }
+            }
+        })
+    } catch (error) {
+        res.status(500).json({
+            status: 'Internal Server Error',
+            message: 'Terjadi kesalahan pada server.'
         })
     }
 }

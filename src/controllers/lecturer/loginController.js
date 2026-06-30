@@ -6,12 +6,12 @@ require('dotenv').config()
 
 exports.postLogin = async function (req, res) {
     try {
-        const { username, password } = req.body
+        const { nid, password } = req.body
 
-        if (!username || !password) {
+        if (!nid || !password) {
             return res.status(400).json({
                 status: 'Bad Request',
-                message: 'Username dan password dibutuhkan.'
+                message: 'NID dan password dibutuhkan.'
             })
         }
 
@@ -23,17 +23,18 @@ exports.postLogin = async function (req, res) {
         }
 
         const [checkUser] = await db.query(
-            `SELECT username, nip, fullname, password, gender, position FROM academic WHERE username = ?`, [username]
+            `SELECT nid, fullname, nickname, gender, password, degree FROM lecturers WHERE nid = ?`, [nid]
         )
 
         if (checkUser.length === 0) {
             return res.status(401).json({
                 status: 'Unauthorized',
-                message: 'Username tidak ditemukan. Harap masukkan username dengan benar.'
+                message: `NID ${nid} tidak ditemukan. Harap masukkan nid dengan benar.`
             })
         }
 
         const verify = await bcrypt.compare(password, checkUser[0].password)
+        const finalName = `${checkUser[0].fullname}, ${checkUser[0].degree}`
 
         if (!verify) {
             return res.status(401).json({
@@ -42,22 +43,21 @@ exports.postLogin = async function (req, res) {
             })
         } else {
             const isGender = checkUser[0].gender
-
+            
             let gender = ''
             if (isGender === 0) gender = 'Pria'
             else gender = 'Wanita'
 
             const payload = {
-                nip: checkUser[0].nip,
-                fullname: checkUser[0].fullname,
+                nid: checkUser[0].nid,
+                fullname: finalName,
                 gender,
                 is_gender: isGender,
-                position: checkUser[0].position,
-                role: 'academic'
+                role: 'lecturer'
             }
 
             const token = jwt.sign(payload, process.env.SECRET_KEY, {
-                expiresIn: '1d'
+                expiresIn: '3h'
             })
 
             res.cookie('token', token, {
@@ -66,17 +66,10 @@ exports.postLogin = async function (req, res) {
                 sameSite: process.env.SAME_SITE,
                 maxAge: 24 * 60 * 60 * 1000
             })
-            
+
             return res.status(200).json({
                 status: 'success',
-                message: `Hi, ${checkUser[0].username}. Anda berhasil login.`,
-                result: {
-                    nip: checkUser[0].nip,
-                    fullname: checkUser[0].fullname,
-                    gender,
-                    is_gender: isGender,
-                    position: checkUser[0].position,
-                }
+                message: `Hi, ${checkUser[0].nickname}. Anda berhasil login.`
             })
         }
     } catch (error) {
